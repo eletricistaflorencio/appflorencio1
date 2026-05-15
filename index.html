@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Florêncio Eletricista - Sistema Profissional</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0f1e 0%, #0f172a 100%);
+            color: #eef2ff;
+            padding: 20px;
+            padding-bottom: 100px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 650px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* HEADER MELHORADO */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            padding: 20px;
+            border-radius: 30px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .subtitle {
+            color: #fbbf24;
+            font-size: 0.75rem;
+            margin-top: -4px;
+            opacity: 0.9;
+        }
+        .offline-badge {
+            background: #1f2937;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #fbbf24;
+            border: 1px solid #f59e0b;
+        }
+
+        /* MENU PRINCIPAL - BOTÕES MAIS BONITOS */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 40px;
+        }
+        .big-btn {
+            background: linear-gradient(135deg, #1e293b, #111827);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 24px;
+            padding: 16px 8px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #e2e8ff;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .big-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(245,158,11,0.2), transparent);
+            transition: left 0.5s;
+        }
+        .big-btn:hover::before {
+            left: 100%;
+        }
+        .big-btn:active { transform: scale(0.96); background: #1e2a3a; }
+        .big-btn.whatsapp { border-color: #25D366; color: #25D366; }
+        .big-btn.calculator { border-color: #3b82f6; color: #3b82f6; }
+        .big-btn.finance { border-color: #10b981; color: #10b981; }
+
+        /* MODAIS - DESIGN MELHORADO */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.96);
+            z-index: 1000;
+            overflow-y: auto;
+            backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #0f172a, #0a0f1e);
+            border-radius: 32px;
+            width: 90%;
+            max-width: 540px;
+            margin: 30px auto;
+            padding: 28px 24px;
+            border: 1px solid #f59e0b;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            animation: modalSlideIn 0.3s ease;
+        }
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .modal-content h2 {
+            margin-bottom: 24px;
+            font-size: 1.6rem;
+            border-left: 5px solid #f59e0b;
+            padding-left: 16px;
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .close-modal {
+            float: right;
+            font-size: 32px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 0 12px;
+            transition: 0.3s;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .close-modal:hover {
+            background: #334155;
+            color: #fbbf24;
+            transform: rotate(90deg);
+        }
+        
+        /* FORMULÁRIOS MELHORADOS */
+        .form-group { margin-bottom: 18px; }
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600; 
+            color: #fbbf24; 
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #f59e0b;
+            box-shadow: 0 0 10px rgba(245,158,11,0.3);
+            background: #253247;
+        }
+        
+        /* BOTÕES MELHORADOS */
+        button {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border: none;
+            padding: 14px 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            color: #0a0f1e;
+            margin-top: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(245,158,11,0.3);
+        }
+        button:active { transform: translateY(0); }
+        .btn-secondary { background: linear-gradient(135deg, #334155, #1e293b); color: white; }
+        .btn-whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); color: white; }
+        .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+        .btn-info { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
+        
+        /* CARDS MELHORADOS */
+        .card-item {
+            background: linear-gradient(135deg, #1e293b, #162136);
+            margin: 12px 0;
+            padding: 16px;
+            border-radius: 20px;
+            border-left: 4px solid #f59e0b;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .card-item:hover {
+            transform: translateX(5px);
+            border-left-color: #fbbf24;
+        }
+        .dashboard-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            padding: 20px;
+            border-radius: 24px;
+            margin: 12px 0;
+            text-align: center;
+            border: 1px solid rgba(245,158,11,0.3);
+            transition: all 0.3s;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .dashboard-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fbbf24;
+        }
+        .finance-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #334155;
+            flex-wrap: wrap;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        .finance-row:hover {
+            background: #1e293b;
+            border-radius: 12px;
+        }
+        .material-lista-item {
+            background: linear-gradient(135deg, #1e293b, #162136);
+            margin: 10px 0;
+            padding: 14px;
+            border-radius: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        .material-lista-item:hover {
+            transform: scale(1.01);
+            background: #253247;
+        }
+        .material-quantidade {
+            background: #f59e0b;
+            color: #0a0f1e;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .search-box input { flex: 1; min-width: 150px; }
+        .search-box button { margin-top: 0; }
+        .material-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .material-row input { flex: 1; min-width: 80px; padding: 12px; }
+        
+        /* CALCULADORA MELHORADA */
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .calc-btn {
+            background: linear-gradient(135deg, #1e293b, #162136);
+            border: 1px solid #334155;
+            padding: 18px;
+            font-size: 1.3rem;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .calc-btn:active { 
+            background: #f59e0b; 
+            color: #0a0f1e; 
+            transform: scale(0.95);
+        }
+        .calc-display {
+            background: #1e293b;
+            padding: 24px;
+            border-radius: 20px;
+            font-size: 2.2rem;
+            text-align: right;
+            font-family: monospace;
+            margin-bottom: 20px;
+            border: 1px solid #f59e0b;
+            word-break: break-all;
+        }
+        
+        .assinatura-area {
+            border: 2px dashed #f59e0b;
+            padding: 18px;
+            text-align: center;
+            border-radius: 20px;
+            margin: 12px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(245,158,11,0.1);
+        }
+        .assinatura-area:active { background: #1e293b; transform: scale(0.98); }
+        .total-materiais { 
+            background: linear-gradient(135deg, #f59e0b, #d97706); 
+            color: #0a0f1e; 
+            padding: 14px; 
+            border-radius: 20px; 
+            font-weight: bold; 
+            text-align: center; 
+            margin: 15px 0;
+            font-size: 1rem;
+        }
+        .contatos-rapidos { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+        .contato-chip { 
+            background: linear-gradient(135deg, #25D366, #128C7E); 
+            color: white; 
+            padding: 8px 16px; 
+            border-radius: 40px; 
+            font-size: 0.8rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: all 0.3s;
+        }
+        .contato-chip:active { transform: scale(0.95); }
+        hr { border-color: #334155; margin: 20px 0; }
+        footer { 
+            text-align: center; 
+            font-size: 0.7rem; 
+            margin-top: 40px; 
+            color: #64748b;
+            padding: 20px;
+            border-top: 1px solid #334155;
+        }
+        .result-box { 
+            background: linear-gradient(135deg, #0f172a, #0a0f1e); 
+            border: 1px solid #f59e0b; 
+            padding: 16px; 
+            border-radius: 20px; 
+            margin: 15px 0; 
+            line-height: 1.6;
+        }
+        .fornecedor-box { 
+            background: linear-gradient(135deg, #1e293b, #162136); 
+            padding: 16px; 
+            border-radius: 20px; 
+            margin: 15px 0;
+        }
+        
+        /* SCROLLBAR PERSONALIZADA */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f59e0b;
+            border-radius: 10px;
+        }
+        
+        /* RESPONSIVO */
+        @media (max-width: 480px) {
+            body { padding: 12px; }
+            .big-btn { font-size: 0.75rem; padding: 12px 4px; }
+            .modal-content { padding: 20px; margin: 15px auto; }
+            h1 { font-size: 1.3rem; }
+            .dashboard-value { font-size: 1.5rem; }
+            button { padding: 10px 18px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div>
+            <h1>⚡ Florêncio Eletricista</h1>
+            <div class="subtitle">Sistema Profissional de Gestão</div>
+        </div>
+        <div class="offline-badge">📴 OFFLINE • SEGURO</div>
+    </div>
+
+    <div class="menu-grid">
+        <div class="big-btn" onclick="abrirModal('servicoModal')">🔧 Serviços</div>
+        <div class="big-btn" onclick="abrirModal('eletricoModal')">⚡ Cálculo</div>
+        <div class="big-btn" onclick="abrirModal('mercadoModal')">📊 Mercado</div>
+        <div class="big-btn" onclick="abrirModal('orcamentoModal')">💰 Orçamento</div>
+        <div class="big-btn" onclick="abrirModal('agendaModal')">📅 Agenda</div>
+        <div class="big-btn" onclick="abrirModal('reciboModal')">🧾 Recibo</div>
+        <div class="big-btn" onclick="abrirModal('materiaisModal')">🧱 Materiais</div>
+        <div class="big-btn whatsapp" onclick="abrirModal('whatsappModal')">📱 WhatsApp</div>
+        <div class="big-btn calculator" onclick="abrirModal('calculadoraModal')">🧮 Calculadora</div>
+        <div class="big-btn finance" onclick="abrirModal('dashboardModal')">📈 Dashboard</div>
+        <div class="big-btn finance" onclick="abrirModal('faturamentoModal')">💰 Faturamento</div>
+        <div class="big-btn finance" onclick="abrirModal('fechamentoModal')">📅 Fechamento</div>
+    </div>
+    <footer>💾 Dados salvos localmente • Todos os serviços integrados</footer>
+</div>
+
+<!-- MODAIS (mantidos os mesmos IDs e estruturas) -->
+<div id="servicoModal" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="fecharModal('servicoModal')">&times;</button>
+        <h2>🔧 Gestão de Serviços</h2>
+        <div class="form-group"><label>📋 Nome da Obra</label><input type="text" id="servicoNome" placeholder="Ex: Residência Silva"></div>
+        <div class="form-group"><label>👤 Cliente</label><input type="text" id="servicoCliente"></div>
+        <div class="form-group"><label>📱 WhatsApp</label><input type="tel" id="servicoWhatsApp" placeholder="(11) 99999-9999"></div>
+        <div class="form-group"><label>📍 Endereço</label><input type="text" id="servicoEndereco"></div>
+        <div class="form-group"><label>📅 Data Início</label><input type="date" id="servicoDataInicio"></div>
+        <div class="form-group"><label>📌 Status</label><select id="servicoStatus"><option>Planejamento</option><option>Em andamento</option><option>Concluído</option></select></div>
+        <div class="form-group"><label>💰 Valor (R$)</label><input type="number" id="servicoValor" placeholder="0,00"></div>
+        <button onclick="salvarServico()">💾 Salvar Serviço</button>
+        <button onclick="listarServicos()" class="btn-secondary">📋 Ver serviços</button>
+        <div id="listaServicosDiv"></div>
+    </div>
+</div>
+
+<div id="materiaisModal" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="fecharModal('materiaisModal')">&times;</button>
+        <h2>🧱 Lista de Materiais da Obra</h2>
+        <div class="form-group"><label>🏗️ Nome da Obra/Cliente</label><input type="text" id="obraNome" placeholder="Ex: Residência Silva"></div>
+        <div class="form-group"><label>📅 Data da Compra</label><input type="date" id="dataCompra"></div>
+        <div class="form-group">
+            <label>➕ Adicionar Material</label>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <input type="text" id="novoMaterialNome" placeholder="Nome do material" style="flex: 2">
+                <input type="number" id="novoMaterialQtd" placeholder="Qtd" style="width: 80px">
+                <button onclick="adicionarMaterialLista()" class="btn-success" style="margin-top:0">+</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>📋 Materiais Rápidos</label>
+            <div id="materiaisRapidosLista" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+        </div>
+        <hr>
+        <h3>📦 Materiais da Obra</h3>
+        <div id="listaMateriaisObra"></div>
+        <div class="total-materiais" id="totalMateriaisObra">Total de Itens: 0</div>
+        <div class="fornecedor-box">
+            <label>📱 WhatsApp do Fornecedor</label>
+            <input type="tel" id="fornecedorWhatsApp" placeholder="(11) 99999-9999">
+            <button onclick="enviarListaFornecedor()" class="btn-whatsapp" style="width:100%">📤 Enviar Lista ao Fornecedor</button>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button onclick="salvarListaMateriais()" class="btn-secondary">💾 Salvar Lista</button>
+            <button onclick="limparListaMateriais()" class="btn-danger">🗑️ Limpar Lista</button>
+            <button onclick="carregarListasSalvas()" class="btn-info">📋 Carregar Listas</button>
+        </div>
+        <div id="listasSalvasDiv" style="margin-top: 15px;"></div>
+    </div>
+</div>
+
+<!-- DEMAIS MODAIS (mesma estrutura) -->
+<div id="eletricoModal" class="modal"><div class="modal-content"><button class="close-modal" onclick="fecharModal('eletricoModal')">&times;</button><h2>⚡ Cálculo Elétrico</h2>
+<div class="form-group"><label>Potência (W)</label><input type="number" id="potenciaCalc" placeholder="8000"></div>
+<div class="form-group"><label>Tensão (V)</label><input type="number" id="tensaoCalc" value="220"></div>
+<div class="form-group"><label>Distância (m)</label><input type="number" id="distanciaCalc" value="15"></div>
+<div class="form-group"><label>Área (m²)</label><input type="number" id="areaCalc" placeholder="120"></div>
+<button onclick="calcularEletrico()">🔧 Calcular</button>
+<div id="resultadoCalc" class="result-box"></div>
+<button onclick="gerarMateriaisCalculo()" class="btn-secondary">📦 Gerar Materiais</button>
+<button onclick="fecharModal('eletricoModal');abrirModal('materiaisModal')" class="btn-success">💰 Ver Materiais</button></div></div>
+
+<div id="mercadoModal" class="modal"><div class="modal-content"><button class="close-modal" onclick="fecharModal('mercadoModal')">&times;</button><h2>📊 Pesquisa de Mercado</h2>
+<div class="search-box"><input type="text" id="buscaMaterial" placeholder="Buscar material"><button onclick="buscarPrecoMaterial()" class="btn-info">Buscar</button></div>
+<div id="resultadoBuscaMaterial" class="card-item"></div>
+<hr><div id="tabelaPrecosDiv"></div>
+<button onclick="salvarTabelaPrecos()" class="btn-secondary">💾 Salvar Tabela</button></div></div>
+
+<div id="orcamentoModal" class="modal"><div class="modal-content"><button class="close-modal" onclick="fecharModal('orcamentoModal')">&times;</button><h2>💰 Orçamento</h2>
+<div class="form-group"><label>Cliente</label><input type="text" id="orcCliente"></div>
+<div class="form-group"><label>WhatsApp</label><input type="tel" id="orcTelefone"></div>
+<div class="form-group"><label>Mão de obra (R$)</label><input type="number" id="maoDeObra" value="200"></div>
+<div id="listaMateriaisOrc"></div>
+<button onclick="adicionarMaterialOrc()" class="btn-secondary">+ Adicionar material</button>
+<div class="total-materiais" id="totalMateriaisOrc">Total Materiais: R$ 0.00</div>
+<div class="form-group"><label>Desconto (R$)</label><input type="number" id="descontoOrc" value="0"></div>
+<div class="card-item"><strong>TOTAL GERAL: R$ <span id="totalOrcamento">0.00</span></strong></div>
+<button onclick="atualizarOrcamento()">Atualizar</button>
+<button onclick="gerarPDFOrcamento()">📄 PDF</button>
+<button onclick="salvarFaturaOrcamento()" class="btn-success">💰 Salvar Fatura</button>
+<button onclick="enviarOrcamentoWhats()" class="btn-whatsapp">📱 WhatsApp</button></div></div>
+
+<div id="agendaModal" class="modal"><div class="modal-content"><button class="close-modal" onclick="fecharModal('agendaModal')">&times;</button><h2>📅 Agenda</h2>
+<div class="form-group"><label>Cliente</label><input type="text" id="agendaCliente"></div>
+<div class="form-group"><label>WhatsApp</label><input type="tel" id="agendaWhatsApp"></div>
+<div class="form-group"><label>Data/Hora</label><input type="datetime-local" id="agendaData"></div>
+<div class="form-group"><label>Status</label><select id="agendaStatus"><option>Agendado</option><option>Confirmado</option><option>Concluído</option></select></div>
+<button onclick="salvarAgenda()">Salvar</button>
+<div id="listaAgendaDiv"></div></div></div>
+
+<div id="reciboModal" class="modal"><div class="modal-content"><button class="close-modal" onclick="fecharModal('reciboModal')">&times;</button><h2>🧾 Recibo</h2>
+<div class="form-group"><label>Cliente</label><input type="text" id="reciboCliente"></div>
+<div class="form-group"><label>WhatsApp</label><input type="tel" id="reciboTelefone"></div>
+<div class="form-group"><label>Serviço realizado</label><textarea id="reciboServico" rows="2"></textarea></div>
+<div class="form-group"><label>Valor (R$)</label><input type="number" id="reciboValor"></div>
+<div class="assinatura-area" onclick="assinarRecibo()">✍️ Toque para assinar digitalmente</div>
+<input type="text" id="assinaturaNome" placeholder="Assinatura">
+<button onclick="gerarPDFRecibo()">📄 PDF</button>
+<button onclick="enviarReciboWhats()" class="btn-whatsapp">📱 WhatsApp</button></div></div>
+
+<div id="whatsappModal" class="modal"><div class="modal-content"><button class="close-modal" onclick="fecharModal('whatsappModal')">&times;</button><h2>📱 WhatsApp Rápido</h2>
+<div class="search-box"><input type="text" id="buscaContatoWhats" placeholder="Buscar cliente"><button onclick="buscarContatoWhats()" class="btn-info">Buscar</button></div>
+<div id="contatosRapidosDiv" class="contatos-rapidos"></div>
+<div class="form-group"><label>Número</label><input type="tel" id="whatsNumero" placeholder="11999999999"></div>
+<div class="form-group"><label>Mensagem</label><textarea id="whatsMensagem" rows="3"></textarea></div>
+<button onclick="enviarWhatsApp()" class="btn-whatsapp">📤 Enviar</button>
+<button onclick="setarModeloOrcamento()" class="btn-secondary">💰 Orçamento</button>
+<button onclick="setarModeloRecibo()" class="btn-secondary">🧾 Recibo</button>
+<button onclick="setarModeloLembrete()" class="btn-secondary">📅 Lembrete</button></div></div>
+
+<div id="calculadoraModal" class="modal"><div class="modal-content"><button class="close-modal" onclick="fecharModal('calculadoraModal')">&times;</button><h2>🧮 Calculadora</h2>
+<div class="calc-display" id="calcDisplay">0</div>
+<div class="calc-buttons">
+    <div class="calc-btn" onclick="calcClick('7')">7</div><div class="calc-btn" onclick="calcClick('8')">8</div><div class="calc-btn" onclick="calcClick('9')">9</div><div class="calc-btn" onclick="calcClick('/')">÷</div>
+    <div class="calc-btn" onclick="calcClick('4')">4</div><div class="calc-btn" onclick="calcClick('5')">5</div><div class="calc-btn" onclick="calcClick('6')">6</div><div class="calc-btn" onclick="calcClick('*')">×</div>
+    <div class="calc-btn" onclick="calcClick('1')">1</div><div class="calc-btn" onclick="calcClick('2')">2</div><div class="calc-btn" onclick="calcClick('3')">3</div><div class="calc-btn" onclick="calcClick('-')">-</div>
+    <div class="calc-btn" onclick="calcClick('0')">0</div><div class="calc-btn" onclick="calcClick('.')">.</div><div class="calc-btn" onclick="calcClick('=')">=</div><div class="calc-btn" onclick="calcClick('+')">+</div>
+    <div class="calc-btn" onclick="calcClick('C')">C</div><div class="calc-btn" onclick="calcClick('CE')">CE</div>
+</div></div></div>
+
+<div id="dashboardModal" class="modal"><div class="modal-content"><button class="close-modal" onclick="fecharModal('dashboardModal')">&times;</button><h2>📈 Dashboard Financeiro</h2>
+<div id="dashboardContent"></div>
+<button onclick="atualizarDashboard()" class="btn-success">🔄 Atualizar</button></div></div>
+
+<div id="faturamentoModal" class="modal"><div class="modal-content"><button class="close-modal" onclick="fecharModal('faturamentoModal')">&times;</button><h2>💰 Faturamento</h2>
+<select id="periodoFatura" onchange="carregarFaturamento()"><option value="mes">Mês atual</option><option value="ano">Ano</option><option value="todos">Todos</option></select>
+<div id="faturamentoContent"></div>
+<button onclick="gerarRelatorioFatura()" class="btn-secondary">📄 Gerar Relatório</button></div></div>
+
+<div id="fechamentoModal" class="modal"><div class="modal-content"><button class="close-modal" onclick="fecharModal('fechamentoModal')">&times;</button><h2>📅 Fechamento Mensal</h2>
+<input type="month" id="mesFechamentoInput" onchange="carregarFechamentoMensal()">
+<div id="fechamentoContent"></div>
+<button onclick="gerarPDFFechamento()" class="btn-secondary">📄 Gerar PDF</button></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+// ==================== VARIÁVEIS GLOBAIS ====================
+let materiaisObra = [];
+let materiaisOrcamento = [];
+let servicos = [];
+let agenda = [];
+let faturas = [];
+let precosMercado = {};
+let listasSalvas = [];
+
+// Calculadora
+let calcValor = "0";
+let calcOperador = null;
+let calcValorAnterior = null;
+let calcLimparDisplay = false;
+
+// ==================== MODAIS ====================
+function abrirModal(id) {
+    document.getElementById(id).style.display = "block";
+    
+    if(id === 'materiaisModal') { 
+        renderListaMateriaisObra();
+        renderMateriaisRapidos();
+        carregarListasSalvas();
+        document.getElementById("dataCompra").value = new Date().toISOString().slice(0,10);
+    }
+    if(id === 'agendaModal') renderAgenda();
+    if(id === 'servicoModal') listarServicos();
+    if(id === 'dashboardModal') atualizarDashboard();
+    if(id === 'faturamentoModal') carregarFaturamento();
+    if(id === 'fechamentoModal') { 
+        document.getElementById("mesFechamentoInput").value = new Date().toISOString().slice(0,7);
+        carregarFechamentoMensal();
+    }
+    if(id === 'orcamentoModal') { renderMateriaisOrcamento(); calcTotalOrcamento(); }
+    if(id === 'whatsappModal') carregarContatosRapidos();
+}
+function fecharModal(id) { 
+    document.getElementById(id).style.display = "none"; 
+}
+window.onclick = function(e) { 
+    if(e.target.classList.contains('modal')) {
+        e.target.style.display = "none";
+    }
+}
+
+// ==================== SERVIÇOS ====================
+function salvarServico() {
+    let s = { id:Date.now(), nome:document.getElementById("servicoNome").value, cliente:document.getElementById("servicoCliente").value, whatsApp:document.getElementById("servicoWhatsApp").value, endereco:document.getElementById("servicoEndereco").value, dataInicio:document.getElementById("servicoDataInicio").value, status:document.getElementById("servicoStatus").value, valor:parseFloat(document.getElementById("servicoValor").value)||0 };
+    if(!s.nome) { alert("Digite o nome da obra!"); return; }
+    servicos.push(s);
+    localStorage.setItem("florencio_servicos", JSON.stringify(servicos));
+    listarServicos();
+    alert("✅ Serviço salvo com sucesso!");
+    document.getElementById("servicoNome").value = "";
+    document.getElementById("servicoCliente").value = "";
+    document.getElementById("servicoWhatsApp").value = "";
+    document.getElementById("servicoValor").value = "";
+}
+function listarServicos() {
+    let div = document.getElementById("listaServicosDiv");
+    if(!div) return;
+    let s = localStorage.getItem("florencio_servicos");
+    if(s) servicos = JSON.parse(s);
+    if(servicos.length===0) { div.innerHTML="<div class='card-item'>📭 Nenhum serviço cadastrado</div>"; return; }
+    div.innerHTML = "<h3>📋 Últimos serviços</h3>" + servicos.slice(-5).reverse().map(s=>`<div class="card-item" onclick="carregarServicoEdicao(${s.id})"><strong>🏗️ ${s.nome}</strong><br>👤 ${s.cliente||"N/A"} | 📌 ${s.status} | 💰 R$ ${(s.valor||0).toFixed(2)}</div>`).join("");
+}
+function carregarServicoEdicao(id) {
+    let s = servicos.find(s=>s.id===id);
+    if(s) {
+        document.getElementById("servicoNome").value = s.nome;
+        document.getElementById("servicoCliente").value = s.cliente||"";
+        document.getElementById("servicoWhatsApp").value = s.whatsApp||"";
+        document.getElementById("servicoValor").value = s.valor||0;
+        alert("📋 Serviço carregado para edição!");
+    }
+}
+
+// ==================== MATERIAIS DA OBRA ====================
+function adicionarMaterialLista() {
+    let nome = document.getElementById("novoMaterialNome").value;
+    let qtd = parseInt(document.getElementById("novoMaterialQtd").value);
+    if(!nome) { alert("📦 Digite o nome do material!"); return; }
+    if(isNaN(qtd)||qtd<=0) { alert("🔢 Digite uma quantidade válida!"); return; }
+    materiaisObra.push({id:Date.now(), nome, quantidade:qtd});
+    document.getElementById("novoMaterialNome").value = "";
+    document.getElementById("novoMaterialQtd").value = "";
+    renderListaMateriaisObra();
+    alert(`✅ ${nome} adicionado à lista!`);
+}
+function removerMaterialObra(i) { materiaisObra.splice(i,1); renderListaMateriaisObra(); }
+function renderListaMateriaisObra() {
+    let div = document.getElementById("listaMateriaisObra");
+    if(!div) return;
+    if(materiaisObra.length===0) { div.innerHTML="<div class='card-item'>📭 Nenhum material adicionado.</div>"; document.getElementById("totalMateriaisObra").innerHTML="📦 Total de Itens: 0"; return; }
+    let total=0;
+    div.innerHTML = materiaisObra.map((m,i)=>{ total+=m.quantidade; return `<div class="material-lista-item"><span><strong>📦 ${m.nome}</strong></span><span class="material-quantidade">${m.quantidade} un</span><button onclick="removerMaterialObra(${i})" class="btn-danger" style="padding:5px 12px">🗑️</button></div>`; }).join("");
+    document.getElementById("totalMateriaisObra").innerHTML = `📦 Total de Itens: ${total}`;
+}
+function renderMateriaisRapidos() {
+    let div = document.getElementById("materiaisRapidosLista");
+    if(!div) return;
+    let r = ["Cabo 2.5mm", "Cabo 4mm", "Tomada 10A", "Disjuntor 20A", "Interruptor", "Caixa 4x2", "Conduíte 20mm", "Fita isolante"];
+    div.innerHTML = r.map(n => `<div class="contato-chip" style="background:#f59e0b; color:#0a0f1e" onclick="document.getElementById('novoMaterialNome').value='${n}';document.getElementById('novoMaterialQtd').value='10'">⚡ + ${n}</div>`).join("");
+}
+function limparListaMateriais() { if(confirm("⚠️ Tem certeza que deseja limpar toda a lista?")) { materiaisObra=[]; renderListaMateriaisObra(); alert("🗑️ Lista limpa!"); } }
+function salvarListaMateriais() {
+    let nome = document.getElementById("obraNome").value;
+    if(!nome) { alert("🏗️ Digite o nome da obra!"); return; }
+    if(materiaisObra.length===0) { alert("📦 Adicione materiais à lista!"); return; }
+    listasSalvas.push({id:Date.now(), nome, data:document.getElementById("dataCompra").value, materiais:[...materiaisObra]});
+    localStorage.setItem("florencio_listas_materiais", JSON.stringify(listasSalvas));
+    alert(`✅ Lista "${nome}" salva com sucesso!`);
+    carregarListasSalvas();
+}
+function carregarListasSalvas() {
+    let l = localStorage.getItem("florencio_listas_materiais");
+    if(l) listasSalvas = JSON.parse(l);
+    let div = document.getElementById("listasSalvasDiv");
+    if(!div) return;
+    if(listasSalvas.length===0) { div.innerHTML=""; return; }
+    div.innerHTML = "<h3>📋 Listas Salvas</h3>" + listasSalvas.slice(-5).reverse().map(l=>`<div class="material-lista-item" onclick="carregarListaSalva(${l.id})"><div><strong>🏗️ ${l.nome}</strong><br><small>📅 ${l.data||"Sem data"}</small></div><div>📦 ${l.materiais.length} itens</div></div>`).join("");
+}
+function carregarListaSalva(id) {
+    let l = listasSalvas.find(l=>l.id===id);
+    if(l) { materiaisObra = [...l.materiais]; document.getElementById("obraNome").value = l.nome; document.getElementById("dataCompra").value = l.data||new Date().toISOString().slice(0,10); renderListaMateriaisObra(); alert(`✅ Lista "${l.nome}" carregada!`); }
+}
+function enviarListaFornecedor() {
+    let fone = document.getElementById("fornecedorWhatsApp").value;
+    let obra = document.getElementById("obraNome").value;
+    if(!fone) { alert("📱 Digite o WhatsApp do fornecedor!"); return; }
+    if(materiaisObra.length===0) { alert("📦 Adicione materiais à lista!"); return; }
+    let msg = `*📋 LISTA DE MATERIAIS - ${obra||"OBRA"}*\n📅 Data: ${new Date().toLocaleDateString()}\n\n📦 MATERIAIS NECESSÁRIOS:\n`;
+    for(let m of materiaisObra) msg += `• ${m.nome}: ${m.quantidade} unidades\n`;
+    msg += `\n---\n⚡ Florêncio Eletricista\n📞 Entre em contato para entrega.`;
+    let n = fone.replace(/\D/g,'');
+    if(n.length<10) { alert("📱 Número inválido!"); return; }
+    window.open(`https://wa.me/${n}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+// ==================== CÁLCULO ELÉTRICO ====================
+function calcularEletrico() {
+    let p = parseFloat(document.getElementById("potenciaCalc").value);
+    let t = parseFloat(document.getElementById("tensaoCalc").value);
+    if(!p||!t) { alert("⚠️ Informe potência e tensão!"); return; }
+    let c = p/t;
+    let dis = Math.ceil(c*1.25);
+    let bit = c<=20?"2.5mm²":c<=32?"4mm²":"6mm²";
+    document.getElementById("resultadoCalc").innerHTML = `<strong>📊 RESULTADOS:</strong><br>⚡ Corrente: ${c.toFixed(1)}A<br>🔌 Disjuntor sugerido: ${dis}A<br>🔧 Cabo fase/neutro: ${bit}`;
+    window.ultimoCalc = {c,dis,bit};
+}
+function gerarMateriaisCalculo() {
+    if(window.ultimoCalc) {
+        materiaisObra.push({nome:`Cabo ${window.ultimoCalc.bit}`, quantidade:30});
+        materiaisObra.push({nome:`Disjuntor ${window.ultimoCalc.dis}A`, quantidade:1});
+        renderListaMateriaisObra();
+        alert("✅ Materiais adicionados à lista!");
+        fecharModal('eletricoModal');
+        abrirModal('materiaisModal');
+    } else { alert("⚠️ Calcule primeiro!"); }
+}
+
+// ==================== AGENDA ====================
+function salvarAgenda() {
+    let c = document.getElementById("agendaCliente").value;
+    let d = document.getElementById("agendaData").value;
+    if(!c||!d) { alert("📅 Preencha cliente e data/hora!"); return; }
+    agenda.push({cliente:c, whatsApp:document.getElementById("agendaWhatsApp").value, data:d, status:document.getElementById("agendaStatus").value});
+    localStorage.setItem("florencio_agenda", JSON.stringify(agenda));
+    renderAgenda();
+    alert("✅ Agendamento salvo!");
+    document.getElementById("agendaCliente").value = "";
+    document.getElementById("agendaData").value = "";
+}
+function renderAgenda() {
+    let div = document.getElementById("listaAgendaDiv");
+    if(!div) return;
+    let a = localStorage.getItem("florencio_agenda");
+    if(a) agenda = JSON.parse(a);
+    if(agenda.length===0) { div.innerHTML="<div class='card-item'>📭 Nenhum agendamento</div>"; return; }
+    div.innerHTML = agenda.map(a=>`<div class="card-item"><strong>👤 ${a.cliente}</strong><br>📅 ${a.data}<br>📌 Status: ${a.status}</div>`).join("");
+}
+
+// ==================== RECIBO ====================
+function assinarRecibo() { let n = prompt("✍️ Digite o nome para assinar"); if(n) document.getElementById("assinaturaNome").value = n; }
+function gerarPDFRecibo() {
+    const {jsPDF}=window.jspdf;
+    let d = new jsPDF();
+    d.setFontSize(16);
+    d.text("⚡ FLORÊNCIO ELETRICISTA - RECIBO", 20, 20);
+    d.text(`👤 Cliente: ${document.getElementById("reciboCliente").value}`, 20, 45);
+    d.text(`🔧 Serviço: ${document.getElementById("reciboServico").value}`, 20, 60);
+    d.text(`💰 Valor: R$ ${document.getElementById("reciboValor").value}`, 20, 75);
+    d.text(`✍️ Assinatura: ${document.getElementById("assinaturaNome").value||"Assinado"}`, 20, 95);
+    d.text(`📅 Data: ${new Date().toLocaleDateString()}`, 20, 110);
+    d.save(`recibo_${document.getElementById("reciboCliente").value || "cliente"}.pdf`);
+    alert("✅ PDF gerado com sucesso!");
+}
+function enviarReciboWhats() {
+    let t = document.getElementById("reciboTelefone").value;
+    if(t) window.open(`https://wa.me/${t.replace(/\D/g,'')}?text=${encodeURIComponent(`🧾 RECIBO ELÉTRICO\nCliente: ${document.getElementById("reciboCliente").value}\nValor: R$ ${document.getElementById("reciboValor").value}\nServiço concluído! Obrigado.`)}`,'_blank');
+    else alert("📱 Digite o telefone!");
+}
+
+// ==================== ORÇAMENTO ====================
+function renderMateriaisOrcamento() {
+    let div = document.getElementById("listaMateriaisOrc");
+    if(!div) return;
+    if(materiaisOrcamento.length===0) div.innerHTML="<div class='card-item'>📭 Nenhum material. Clique em + Adicionar</div>";
+    else div.innerHTML = materiaisOrcamento.map((m,i)=>`<div class="material-row"><input type="text" value="${m.nome}" id="matNome${i}" style="flex:2"><input type="number" value="${m.quantidade}" id="matQtd${i}" style="flex:1"><input type="number" value="${m.preco}" id="matPreco${i}" step="0.01" style="flex:1"><button onclick="removerMaterialOrc(${i})" class="btn-danger">X</button></div>`).join("");
+}
+function adicionarMaterialOrc() { materiaisOrcamento.push({nome:"Novo material",quantidade:1,preco:0}); renderMateriaisOrcamento(); }
+function removerMaterialOrc(i) { materiaisOrcamento.splice(i,1); renderMateriaisOrcamento(); calcTotalOrcamento(); }
+function calcTotalOrcamento() { let total = materiaisOrcamento.reduce((s,m)=>s+(m.quantidade||1)*(m.preco||0),0); document.getElementById("totalMateriaisOrc").innerHTML=`💰 Materiais: R$ ${total.toFixed(2)}`; let geral = total+(parseFloat(document.getElementById("maoDeObra").value)||0)-(parseFloat(document.getElementById("descontoOrc").value)||0); document.getElementById("totalOrcamento").innerText=geral.toFixed(2); }
+function atualizarOrcamento() { for(let i=0;i<materiaisOrcamento.length;i++){ let n=document.getElementById(`matNome${i}`); let q=document.getElementById(`matQtd${i}`); let p=document.getElementById(`matPreco${i}`); if(n) materiaisOrcamento[i].nome=n.value; if(q) materiaisOrcamento[i].quantidade=parseFloat(q.value)||0; if(p) materiaisOrcamento[i].preco=parseFloat(p.value)||0; } calcTotalOrcamento(); alert("✅ Orçamento atualizado!"); }
+function gerarPDFOrcamento() { const {jsPDF}=window.jspdf; let d=new jsPDF(); d.text("⚡ FLORÊNCIO ELETRICISTA - ORÇAMENTO",20,20); d.text(`👤 Cliente: ${document.getElementById("orcCliente").value||"Cliente"}`,20,45); d.text(`💰 Total: R$ ${document.getElementById("totalOrcamento").innerText}`,20,60); d.save("orcamento.pdf"); alert("✅ PDF gerado!"); }
+function salvarFaturaOrcamento() { let c=document.getElementById("orcCliente").value; let t=parseFloat(document.getElementById("totalOrcamento").innerText); if(!c){alert("👤 Digite o cliente!");return;} faturas.push({id:Date.now(),cliente:c,valor:t,data:new Date().toISOString().slice(0,10),status:"Pendente"}); localStorage.setItem("florencio_faturas",JSON.stringify(faturas)); alert(`✅ Fatura de R$ ${t.toFixed(2)} salva!`); }
+function enviarOrcamentoWhats() { let t=document.getElementById("orcTelefone").value; let total=document.getElementById("totalOrcamento").innerText; if(t) window.open(`https://wa.me/${t.replace(/\D/g,'')}?text=${encodeURIComponent(`📋 ORÇAMENTO\nCliente: ${document.getElementById("orcCliente").value}\n💰 Total: R$ ${total}\n📞 Aguardo seu contato!`)}`,'_blank'); else alert("📱 Digite o telefone!"); }
+
+// ==================== DASHBOARD ====================
+function atualizarDashboard() { let f=localStorage.getItem("florencio_faturas"); if(f)faturas=JSON.parse(f); let total=faturas.reduce((s,f)=>s+f.valor,0); let totalPago=faturas.filter(f=>f.status==="Pago").reduce((s,f)=>s+f.valor,0); document.getElementById("dashboardContent").innerHTML=`<div class="dashboard-card"><div class="dashboard-value">💰 R$ ${total.toFixed(2)}</div><div class="dashboard-label">Total em Faturas</div></div><div class="dashboard-card"><div class="dashboard-value">✅ R$ ${totalPago.toFixed(2)}</div><div class="dashboard-label">Recebido</div></div><div class="dashboard-card"><div class="dashboard-value">📋 ${servicos.length}</div><div class="dashboard-label">Serviços Cadastrados</div></div>`; }
+function carregarFaturamento() { let f=localStorage.getItem("florencio_faturas"); if(f)faturas=JSON.parse(f); let total=faturas.reduce((s,f)=>s+f.valor,0); document.getElementById("faturamentoContent").innerHTML=`<div class="dashboard-card"><div class="dashboard-value">💰 R$ ${total.toFixed(2)}</div><div class="dashboard-label">Total do Período</div></div>`; }
+function carregarFechamentoMensal() { let f=localStorage.getItem("florencio_faturas"); if(f)faturas=JSON.parse(f); let total=faturas.reduce((s,f)=>s+f.valor,0); document.getElementById("fechamentoContent").innerHTML=`<div class="dashboard-card"><div class="dashboard-value">💰 R$ ${total.toFixed(2)}</div><div class="dashboard-label">Faturamento do Mês</div></div><div class="finance-row"><strong>🎯 Meta:</strong> R$ 5.000,00</div><div class="finance-row"><strong>📊 Percentual:</strong> ${((total/5000)*100).toFixed(1)}%</div>`; }
+function gerarRelatorioFatura() { const {jsPDF}=window.jspdf; let d=new jsPDF(); d.text("RELATÓRIO DE FATURAMENTO",20,20); d.save("relatorio.pdf"); alert("✅ Relatório gerado!"); }
+function gerarPDFFechamento() { const {jsPDF}=window.jspdf; let d=new jsPDF(); d.text("FECHAMENTO MENSAL",20,20); d.save("fechamento.pdf"); alert("✅ PDF gerado!"); }
+
+// ==================== MERCADO ====================
+precosMercado = { "Cabo 2.5mm":2.5, "Tomada 10A":7.5, "Disjuntor 20A":15, "Interruptor":6, "Caixa 4x2":3.5 };
+function buscarPrecoMaterial() { let b=document.getElementById("buscaMaterial").value.toLowerCase(); let e=Object.entries(precosMercado).filter(([n])=>n.toLowerCase().includes(b)); document.getElementById("resultadoBuscaMaterial").innerHTML=e.length?e.map(([n,p])=>`<div>📌 ${n}: <strong>R$ ${p.toFixed(2)}</strong></div>`).join(""):"<div>❌ Material não encontrado</div>"; }
+function salvarTabelaPrecos() { localStorage.setItem("florencio_precos",JSON.stringify(precosMercado)); alert("✅ Tabela salva!"); }
+
+// ==================== WHATSAPP ====================
+function buscarContatoWhats() { let b=document.getElementById("buscaContatoWhats").value.toLowerCase(); let clis=[]; for(let s of servicos) if(s.cliente) clis.push({nome:s.cliente,telefone:s.whatsApp}); let r=clis.filter(c=>c.nome.toLowerCase().includes(b)); document.getElementById("contatosRapidosDiv").innerHTML=r.slice(0,5).map(c=>`<div class="contato-chip" onclick="document.getElementById('whatsNumero').value='${c.telefone}'">📱 ${c.nome}</div>`).join(""); if(!b) carregarContatosRapidos(); }
+function carregarContatosRapidos() { let clis=[]; for(let s of servicos) if(s.cliente && s.whatsApp) clis.push({nome:s.cliente,telefone:s.whatsApp}); document.getElementById("contatosRapidosDiv").innerHTML=clis.slice(0,6).map(c=>`<div class="contato-chip" onclick="document.getElementById('whatsNumero').value='${c.telefone}'">📱 ${c.nome}</div>`).join(""); if(clis.length===0) document.getElementById("contatosRapidosDiv").innerHTML="<div class='card-item'>📭 Nenhum contato salvo</div>"; }
+function enviarWhatsApp() { let n=document.getElementById("whatsNumero").value.replace(/\D/g,''); let m=document.getElementById("whatsMensagem").value; if(!n||!m){alert("📱 Preencha número e mensagem!");return;} window.open(`https://wa.me/${n}?text=${encodeURIComponent(m)}`,'_blank'); }
+function setarModeloOrcamento() { document.getElementById("whatsMensagem").value="Olá! Faço orçamentos elétricos sem compromisso. Aguardo seu contato! ⚡ Florêncio Eletricista"; }
+function setarModeloRecibo() { document.getElementById("whatsMensagem").value="Serviço elétrico concluído com sucesso! Obrigado pela confiança! 🧾 Florêncio Eletricista"; }
+function setarModeloLembrete() { document.getElementById("whatsMensagem").value="Lembrete: temos um serviço agendado. Confirma presença? 📅 Florêncio Eletricista"; }
+
+// ==================== CALCULADORA ====================
+function atualizarDisplayCalc() { document.getElementById("calcDisplay").innerText = calcValor; }
+function calcClick(v) {
+    if(v==='C'){ calcValor="0"; calcOperador=null; calcValorAnterior=null; calcLimparDisplay=false; atualizarDisplayCalc(); return; }
+    if(v==='CE'){ calcValor="0"; calcLimparDisplay=false; atualizarDisplayCalc(); return; }
+    if(v==='='){ if(calcOperador&&calcValorAnterior!==null){ let a=parseFloat(calcValor), b=parseFloat(calcValorAnterior), r; switch(calcOperador){ case'+':r=b+a;break; case'-':r=b-a;break; case'*':r=b*a;break; case'/':r=a!==0?b/a:0;break; default:r=a; } calcValor=r.toString(); calcOperador=null; calcValorAnterior=null; calcLimparDisplay=true; atualizarDisplayCalc(); } return; }
+    if(['+','-','*','/'].includes(v)){ calcOperador=v; calcValorAnterior=calcValor; calcLimparDisplay=true; return; }
+    if(v==='.'){ if(!calcValor.includes('.')) calcValor+='.'; atualizarDisplayCalc(); return; }
+    if(calcLimparDisplay){ calcValor=v; calcLimparDisplay=false; } else { calcValor=calcValor==="0"?v:calcValor+v; }
+    atualizarDisplayCalc();
+}
+</script>
+</body>
+</html>
